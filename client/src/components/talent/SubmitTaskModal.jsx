@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { submitTask } from '../../api/submissions';
 
 const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
@@ -6,7 +6,18 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
   const [notes, setNotes] = useState('');
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const allowedExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp'];
+      const fileExt = selectedFile.name.substring(selectedFile.name.lastIndexOf('.')).toLowerCase();
+      if (!allowedExtensions.includes(fileExt)) {
+        alert('Invalid file type. Only PDF and images are allowed.');
+        e.target.value = ''; // Reset input
+        setFile(null);
+        return;
+      }
+    }
+    setFile(selectedFile);
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +64,7 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
               Upload File
             </label>
             
-            <input id="sub-file" type="file" onChange={handleFileChange} className="file-input-hidden" />
+            <input id="sub-file" type="file" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" onChange={handleFileChange} className="file-input-hidden" />
             <label htmlFor="sub-file"
               className="flex flex-col items-center justify-center gap-2 py-7 px-4 bg-bg-input border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-all text-center">
               {file ? (
