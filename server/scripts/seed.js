@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
@@ -41,6 +41,15 @@ const seedData = async () => {
 
   console.log('✅ Users seeded:', admin.email, talent1.email, talent2.email);
 
+  const getDateRelative = (daysOffset) => {
+    const d = new Date();
+    d.setDate(d.getDate() + daysOffset);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   // ── Tasks ──────────────────────────────────────────────────────────────
   await Task.create([
     {
@@ -49,7 +58,7 @@ const seedData = async () => {
         'Deliver a full brand kit including logo variants, color palette, and typography guide. Export as a shareable Figma link.',
       status: 'Open',
       assignedTo: talent1._id,
-      dueDate: '2024-06-15',
+      dueDate: getDateRelative(-9),
       createdBy: admin._id,
     },
     {
@@ -58,7 +67,7 @@ const seedData = async () => {
         'Research competitors in the SaaS talent space and produce a 5-page report with key findings and recommendations.',
       status: 'Claimed',
       assignedTo: talent1._id,
-      dueDate: '2024-06-20',
+      dueDate: getDateRelative(-4),
       createdBy: admin._id,
     },
     {
@@ -67,7 +76,7 @@ const seedData = async () => {
         'Create a 3-part video series (max 5 min each) walking new talents through the platform features.',
       status: 'Submitted',
       assignedTo: talent2._id,
-      dueDate: '2024-06-10',
+      dueDate: getDateRelative(-14),
       createdBy: admin._id,
     },
     {
@@ -75,7 +84,7 @@ const seedData = async () => {
       description:
         'Plan and draft 30 days of social content across LinkedIn, Twitter, and Instagram for the talent portal launch.',
       assignedTo: talent2._id,
-      dueDate: '2024-07-01',
+      dueDate: getDateRelative(7),
       createdBy: admin._id,
     },
     {
@@ -83,7 +92,7 @@ const seedData = async () => {
       description:
         'Write compelling hero copy, feature descriptions, and CTAs for the new landing page. Deliver as a Google Doc.',
       status: 'Open',
-      dueDate: '2024-06-28',
+      dueDate: getDateRelative(4),
       createdBy: admin._id,
     },
   ]);

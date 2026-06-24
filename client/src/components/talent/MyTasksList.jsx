@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import SubmitTaskModal from './SubmitTaskModal';
+import { getDeadlineStatus } from '../../utils/date';
 
 /* ── Status badge classes ── */
 const STATUS_CLASS = {
@@ -73,10 +74,17 @@ const MyTasksList = ({ tasks, onRefresh }) => {
                 {task.title || 'Untitled Task'}
               </p>
               {fmtDate(task.dueDate) && (
-                <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: '#4B5563' }}>
-                  <IconCalendar />
-                  Due {fmtDate(task.dueDate)}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: '#4B5563', margin: 0 }}>
+                    <IconCalendar />
+                    Due {fmtDate(task.dueDate)}
+                  </p>
+                  {getDeadlineStatus(task.dueDate, task.status) && (
+                    <span className={`inline-block px-2 py-[2px] rounded text-[9.5px] font-bold uppercase tracking-[0.5px] ${getDeadlineStatus(task.dueDate, task.status) === 'Overdue' ? 'badge-overdue' : 'badge-due-soon'}`}>
+                      {getDeadlineStatus(task.dueDate, task.status)}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
 
