@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { createTask, fetchTalents } from '../../api/tasks';
 
 const STATUS_OPTIONS = ['Open', 'Claimed', 'Submitted', 'Approved', 'Rejected'];
@@ -22,6 +22,14 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.title.trim()) {
+      alert('Title is required');
+      return;
+    }
+    if (!form.description.trim()) {
+      alert('Description is required');
+      return;
+    }
     try {
       const { data } = await createTask({ ...form, assignedTo: form.assignedTo || undefined });
       onCreated(data);

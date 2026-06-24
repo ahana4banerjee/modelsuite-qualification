@@ -1,4 +1,4 @@
-﻿const Task = require('../models/Task');
+const Task = require('../models/Task');
 
 // @desc  Get all tasks
 // @route GET /api/tasks
@@ -40,6 +40,13 @@ const getTaskById = async (req, res) => {
 const createTask = async (req, res) => {
   const { title, description, status, assignedTo, dueDate } = req.body;
 
+  if (!title || typeof title !== 'string' || !title.trim()) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+  if (!description || typeof description !== 'string' || !description.trim()) {
+    return res.status(400).json({ message: 'Description is required' });
+  }
+
   try {
     const task = await Task.create({
       title,
@@ -60,6 +67,15 @@ const createTask = async (req, res) => {
 // @route PUT /api/tasks/:id
 // @access Admin
 const updateTask = async (req, res) => {
+  const { title, description } = req.body;
+
+  if (title !== undefined && (typeof title !== 'string' || !title.trim())) {
+    return res.status(400).json({ message: 'Title cannot be empty' });
+  }
+  if (description !== undefined && (typeof description !== 'string' || !description.trim())) {
+    return res.status(400).json({ message: 'Description cannot be empty' });
+  }
+
   try {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Task not found' });
@@ -67,7 +83,7 @@ const updateTask = async (req, res) => {
     const updated = await Task.findByIdAndUpdate(
       req.params.id,
       { ...req.body },
-      { new: true }
+      { new: true, runValidators: true }
     ).populate('assignedTo', 'name email');
 
     res.json(updated);
