@@ -1,5 +1,5 @@
 import { deleteTask } from '../../api/tasks';
-import { getDeadlineStatus } from '../../utils/date';
+import { getDeadlineStatus, formatExactDate, getRelativeTimeInfo } from '../../utils/date';
 
 /* ── SVG Action Icons ── */
 const IconEdit = () => (
@@ -130,10 +130,23 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
               <td className="table-td" style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>
                 <div style={{ color: '#E5E2E1', marginBottom: '2px' }}>{fmtDate(task.dueDate)}</div>
                 {getDeadlineStatus(task.dueDate, task.status) && (
-                  <span className={`inline-block px-2.5 py-[3px] rounded text-[10px] font-bold uppercase tracking-[0.5px] ${getDeadlineStatus(task.dueDate, task.status) === 'Overdue' ? 'badge-overdue' : 'badge-due-soon'}`}
-                    style={{ fontFamily: 'Inter, sans-serif' }}>
-                    {getDeadlineStatus(task.dueDate, task.status)}
-                  </span>
+                  <div className="relative group inline-block outline-none" tabIndex="0"
+                    aria-label={`Deadline status: ${getDeadlineStatus(task.dueDate, task.status)}. ${getRelativeTimeInfo(task.dueDate)}. Due Date: ${formatExactDate(task.dueDate)}`}>
+                    <span className={`inline-block px-2.5 py-[3px] rounded text-[10px] font-bold uppercase tracking-[0.5px] cursor-help ${getDeadlineStatus(task.dueDate, task.status) === 'Overdue' ? 'badge-overdue' : 'badge-due-soon'}`}
+                      style={{ fontFamily: 'Inter, sans-serif' }}>
+                      {getDeadlineStatus(task.dueDate, task.status)}
+                    </span>
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:flex group-focus-within:flex flex-col items-center bg-bg-surface border border-border rounded py-1.5 px-2.5 shadow-xl pointer-events-none z-[100] text-center"
+                      style={{ minWidth: '130px' }}>
+                      <span className="text-[11.5px] font-bold text-text-primary block whitespace-nowrap">
+                        {getRelativeTimeInfo(task.dueDate)}
+                      </span>
+                      <span className="text-[10.5px] text-text-muted block mt-0.5 whitespace-nowrap">
+                        Due Date: {formatExactDate(task.dueDate)}
+                      </span>
+                      <div className="w-1.5 h-1.5 bg-bg-surface border-r border-b border-border rotate-45 absolute top-full -translate-y-1/2 left-1/2 -translate-x-1/2 pointer-events-none"></div>
+                    </div>
+                  </div>
                 )}
               </td>
 
